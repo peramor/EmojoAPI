@@ -49,7 +49,10 @@ app.get('/db/query', parser, function(req,res){
     }
 });
 
+Array<string> authenticatedList = {};
+
 app.get('/auth', parser, function(req, res){    
+    
     console.log('/auth started');
     var CODE = req.query.code;
     var clientId = req.query.client;
@@ -66,6 +69,7 @@ app.get('/auth', parser, function(req, res){
         function(err,response,body){
             console.log(body);
             if (!err && response.statusCode==200){
+                authenticated = true;                
                 res.send(body.access_token);
             } else {
                 res.send(body.error_message);
