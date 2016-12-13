@@ -49,15 +49,18 @@ app.get('/db/query', parser, function(req,res){
     }
 });
 
-Array<string> authenticatedList = {};
+var arr = [];
 
 app.get('/auth', parser, function(req, res){    
-    
-    console.log('/auth started');
     var CODE = req.query.code;
     var clientId = req.query.client;
     var clientSecret = req.query.secret;
-    console.log(req);
+    
+    if (arr.indexOf(clientId) > -1){
+        res.end();
+        console.log(arr);
+        return;
+    }
     
     request.post("https://api.instagram.com/oauth/access_token",
         { form : {
@@ -67,9 +70,8 @@ app.get('/auth', parser, function(req, res){
             redirect_uri : 'https://emojo.azurewebsites.new/auth',
             code : CODE}},
         function(err,response,body){
-            console.log(body);
             if (!err && response.statusCode==200){
-                authenticated = true;                
+                arr.push(clientId);                
                 res.send(body.access_token);
             } else {
                 res.send(body.error_message);
